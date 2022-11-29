@@ -43,7 +43,7 @@ let inbounds = "url,status,redirected,location,inbounds";
 for (const item of data) {
     // We are not interested in URLs
     // that point to the right place
-    if (!item.redirected && item.status == 200) continue
+    if (!item.redirected && item.status === 200) continue
     // There could be lots of inbound links, so we output them line by line
     for (const inbound of map.get(item.url)||[]) {
         inbounds += `\n${item.url},${item.status},${item.redirected},${item.location},${inbound}`;

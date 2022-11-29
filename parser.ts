@@ -4,6 +4,7 @@ export class Parser {
     domain: string;
     excludes: string[];
     readonly hrefRegex = /href\s*=\s*(?:[\'\"]*)([^\s\>\'\"\#\?]*)(?:[\'\"\s]*)/g;
+    readonly extensionsToIgnore = ['PNG', 'SVG', 'ICO', 'CSS', 'RDF', 'WOFF2'];
 
     constructor(domain: string, excludes?: string[]) {
         this.domain = domain;
@@ -30,23 +31,34 @@ export class Parser {
 
     cleanURL(url: string): string | null {
         // Reject empty URLs
-        if (url == '') return null;
-        if (url == '/') return null;
+        if (url === '') return null;
+        if (url === '/') return null;
         // Fix naked URLs
-        url = url.startsWith('/') ? this.domain + url : url;
+        url = url.startsWith('/') ? this.domain.replace(/\/+$/, '') + url : url;
         // Reject URLs same as domain
-        if (url == this.domain) return null;
-        if (url == this.domain + '/') return null;
+        if (url === this.domain) return null;
+        if (url === this.domain + '/') return null;
         // Reject non-HTTP schemas
         if (url.startsWith('tel:')) return null;
         if (url.startsWith('email:')) return null;
-        // Reject external URLs
-        if (!url.startsWith(this.domain)) return null;
+        if (url.startsWith('data:')) return null;
+
         // URL is clean
-        return url;
+        return url.replaceAll("//", "/").toLowerCase();
     }
 
     isExcluded(url: string): boolean {
+        const urlEndsWithExtensionToIgnore = this.extensionsToIgnore.some(extension => {
+            console.log(url, extension)
+            return url.toLowerCase().endsWith(extension.toLowerCase());
+        });
+
+        console.log("ENDS WITH", urlEndsWithExtensionToIgnore, url)
+
+        if (urlEndsWithExtensionToIgnore) {
+            return true;
+        }
+
         for (const exclude of this.excludes) {
             if (url.toLowerCase().startsWith(exclude)) return true;
         }

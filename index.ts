@@ -27,7 +27,7 @@ infiniteLoop:
 while (true) {
 
     // Guard for empty batch i.e. we're done
-    if (batch.length == 0) break;
+    if (batch.length === 0) break;
 
     for (const url of batch) {
 
