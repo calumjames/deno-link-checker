@@ -19,7 +19,7 @@ const args = parse(
 
 // Build our config object
 export const config = {
-    DOMAIN: 'https://www.nhs.uk/mental-health/self-help/guides-tools-and-activities/depression-anxiety-self-assessment-quiz',   // Default to potentially be overwritten below
+    DOMAIN: 'https://www.nhs.uk/mental-health/self-help/',   // Default to potentially be overwritten below
     EXCLUDES: ['/service-search', 'https://assets.nhs.uk/'],  // Default to potentially be overwritten below
     MAX_REQUESTS: args.MAX_REQUESTS ?? 100,     // Set to zero to enforce no limit,
     REQUEST_INTERVAL: args.MAX_REQUESTS ?? 100, // How many ms to sleep between HTTP requests,

@@ -4,7 +4,7 @@ export class Parser {
     domain: string;
     excludes: string[];
     readonly hrefRegex = /href\s*=\s*(?:[\'\"]*)([^\s\>\'\"\#\?]*)(?:[\'\"\s]*)/g;
-    readonly extensionsToIgnore = ['PNG', 'SVG', 'ICO', 'CSS', 'RDF', 'WOFF2'];
+    readonly extensionsToIgnore = ['PNG', 'SVG', 'ICO', 'CSS', 'RDF', 'WOFF2', 'ASPX'];
 
     constructor(domain: string, excludes?: string[]) {
         this.domain = domain;
