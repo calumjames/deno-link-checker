@@ -49,11 +49,8 @@ export class Parser {
 
     isExcluded(url: string): boolean {
         const urlEndsWithExtensionToIgnore = this.extensionsToIgnore.some(extension => {
-            console.log(url, extension)
             return url.toLowerCase().endsWith(extension.toLowerCase());
         });
-
-        console.log("ENDS WITH", urlEndsWithExtensionToIgnore, url)
 
         if (urlEndsWithExtensionToIgnore) {
             return true;

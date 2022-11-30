@@ -11,8 +11,6 @@ if (!project) Deno.exit();
 const db = new Database(`./data/${project}/db.json`);
 const data = db.db.documents;
 
-console.log(data)
-
 // Generate the responses report
 let master = "url,hyperlinks,status,lastUpdated";
 for (const item of data) {
