@@ -43,8 +43,11 @@ export class Parser {
         if (url.startsWith('email:')) return null;
         if (url.startsWith('data:')) return null;
 
+        // Reject external URLs
+        //if (!url.startsWith(this.domain)) return null;
+
         // URL is clean
-        return url.replaceAll("//", "/").toLowerCase();
+        return url.replaceAll("//", "/").toLowerCase().replace('http:/', 'http://').replace('http:///', 'http://').replace('https:/', 'https://').replace('https:///', 'https://')
     }
 
     isExcluded(url: string): boolean {

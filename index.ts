@@ -6,6 +6,7 @@ import { config } from './configurator.ts';
 import { Database } from './database.ts';
 import { Parser } from './parser.ts';
 import * as helpers from './helpers.ts';
+import { DOMParser } from "https://deno.land/x/deno_dom/deno-dom-wasm.ts";
 
 /*
  Initialisation
@@ -52,31 +53,51 @@ while (true) {
 
         response = await fetch(url).catch(() => null);
         if (response) {
-            html = await response.text();
-            // Build progress info string for later display to user
-            // FIXME: This is ugly
-            info = helpers.paddedRequestCount(requestCount) + ': ' + response.status + ' ';
-            if (response.redirected) info += 'R ';
-            info += url;
-
-            // Process the response
-
-            if (!response.url.includes(config.DOMAIN)) {
-                // Don't store the URLs detected on external sites
-                // we may have been redirected to
-            } else {
-                hrefs = parser.getURLs(html);
-                for (const href of hrefs) {
-                    await db.enqueue(href);
-                }
+            try {
+                html = await response.text();
+            }
+            catch (error) {
+                html = "";
             }
 
-            await db.update(url, {
-                status: response.status,
-                hyperlinks: hrefs,
-                redirected: response.redirected,
-                location: response.url,
-            });
+            if (html) {
+                const document = new DOMParser().parseFromString(html, "text/html");
+
+                document.querySelector('header')?.remove?.();
+                document.querySelector('footer')?.remove?.();
+
+                const body = document.querySelector('body');
+
+                /*if (header) body.removeChild(header);
+                if (footer) body.removeChild(footer);*/
+
+                const htmlForLinkChecking = body?.innerHTML;
+
+                // Build progress info string for later display to user
+                // FIXME: This is ugly
+                info = helpers.paddedRequestCount(requestCount) + ': ' + response.status + ' ';
+                if (response.redirected) info += 'R ';
+                info += url;
+
+                // Process the response
+
+                if (!response.url.includes(config.DOMAIN)) {
+                    // Don't store the URLs detected on external sites
+                    // we may have been redirected to
+                } else {
+                    hrefs = parser.getURLs(htmlForLinkChecking);
+                    for (const href of hrefs) {
+                        await db.enqueue(href);
+                    }
+                }
+
+                await db.update(url, {
+                    status: response.status,
+                    hyperlinks: hrefs,
+                    redirected: response.redirected,
+                    location: response.url,
+                });
+            }
         } else {
             // Handle error
             // FIXME: This is ugly

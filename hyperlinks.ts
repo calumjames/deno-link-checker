@@ -12,9 +12,8 @@ const db = new Database(`./data/${project}/db.json`);
 const data = db.db.documents;
 
 // Generate the responses report
-let master = "url,hyperlinks,status,lastUpdated";
+let master = "url,hyperlinks,status,redirected,location";
 for (const item of data) {
-    master += `\n${item.url},"${item.hyperlinks}",${item.status},"${dayjs.unix(item.lastUpdated / 1000)}"`;
-
+    master += `\n${item.url},"${item.hyperlinks}",${item.status},"${item.redirected ? 'Redirected' : ''}", ${item.redirected ? item.location : 'N/A'}`;
 }
 Deno.writeTextFileSync(`./reports/hyperlinks/hyperlinks.csv`, master);
