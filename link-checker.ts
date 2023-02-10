@@ -1,6 +1,6 @@
 
 // Link Checker
-// Example usage: deno run --allow-all index.ts -m 0 -t 86400
+// Example usage: deno run --allow-all index.ts -m 0 -t 86400000
 
 import { config } from './configurator.ts';
 import { Database } from './database.ts';
